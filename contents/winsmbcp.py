@@ -53,10 +53,8 @@ def mkdirs(path,
         with open('/tmp/winsmbcp.log', 'a+') as fp_:
             fp_.write('cwd:{0}\n'.format(cwd))
         try:
-            # print 'list path:{0}'.format(cwd)
             conn.listPath(share, cwd)
         except (smbSessionError, smb3SessionError) as exc:
-            # print 'create directory {0}\{1}'.format(share, cwd)
             conn.createDirectory(share, cwd)
         pos += 1
 
@@ -75,11 +73,9 @@ def put_file(src_file, dest_dir, hostname, username, password):
     dest_file = '/'.join(dest_comps[1:])
     mid_path = '/'.join(dest_comps[1:-1])
 
-    # smb_conn = salt.utils.smb.get_conn(hostname, username, password)
     smb_conn = get_conn(hostname, username, password)
     mkdirs(mid_path, share, smb_conn)
 
-    # with salt.utils.fopen(src_file, 'rb') as inst_fh:
     with open(src_file, 'rb') as inst_fh:
         smb_conn.putFile(share, '{0}'.format(dest_file), inst_fh.read)
 
@@ -95,8 +91,3 @@ with open('/tmp/winsmbcp.log', 'a+') as fp_:
     fp_.write('src_file:{0}\n dest_dir:{1}\n'.format(src_file, dest_dir))
 
 put_file(src_file, dest_dir, hostname, username, password)
-
-
-import os
-
-os.path.join()

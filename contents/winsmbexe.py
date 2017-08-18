@@ -47,7 +47,8 @@ def win_cmd(exe_command, **kwargs):
             logging_command=logging_command, )
 
         if logging_command is None:
-            log.info('Executing command(PID %s): \'%s\'', proc.pid, exe_command)
+            log.info('Executing command(PID %s): \'%s\'', proc.pid,
+                     exe_command)
         else:
             log.info('Executing command(PID %s): \'%s\'', proc.pid,
                      logging_command)
