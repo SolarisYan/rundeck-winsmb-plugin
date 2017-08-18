@@ -1,0 +1,122 @@
+name: rd-win-smb-plugin
+version: 1.0.0
+rundeckPluginVersion: 1.1
+author: Solaris
+date: 27.07.2017
+providers:
+  - name: WinSMBexe
+    title: WinSMB Executor
+    description: Executing Scripts or commands on remote windows computer
+    service: NodeExecutor
+    plugin-type: script
+    script-interpreter: python
+    script-file: winsmbexe.py
+    interpreter-args-quoted: true
+    config:
+      - name: user
+        title: Username
+        description: "Username in DOMAIN\\name form"
+        type: String
+        required: false
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "username"
+      - name: pass
+        title: Password
+        description: "Password"
+        type: String
+        required: false
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "win-password-storage-path"
+          valueConversion: STORAGE_PATH_AUTOMATIC_READ
+          displayType: PASSWORD
+      - name: authtype
+        title: Auth type
+        description: "Authentication type"
+        type: Select
+        values: "negotiate, ssl, kerberos, plaintext"
+        default: "plaintext"
+        required: true
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "authtype"
+      - name: allowoverride
+        title: Allow Override
+        description: "Gives possibility to override hostname, username (and password) in job options"
+        type: Select
+        values: "none, host, user, all"
+        default: "none"
+        required: true
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "allowoverride"
+      - name: shell
+        title: Shell
+        description: "Windows interpreter"
+        type: Select
+        values: "cmd, powershell, wql"
+        default: 'powershell'
+        required: true
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "shell"
+  - name: WinSMBcp
+    title: WinSMB File Copier
+    service: FileCopier
+    plugin-type: script
+    script-interpreter: python
+    script-file: winsmbcp.py
+    # script-args: ${node.hostname} ${file-copy.file} ${file-copy.destination}
+    script-args: ${file-copy.file} ${file-copy.destination}
+    # interpreter-args-quoted: true
+    interpreter-args-quoted: false
+    config:
+      - name: user
+        title: Username
+        type: String
+        required: false
+        description: "Username in DOMAIN\\name form"
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "username"
+      - name: pass
+        title: Password
+        type: String
+        required: false
+        description: "Password"
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "win-password-storage-path"
+          valueConversion: STORAGE_PATH_AUTOMATIC_READ
+          displayType: PASSWORD
+      - name: authtype
+        title: Auth type
+        description: "Authentication type"
+        type: Select
+        values: "negotiate, ssl, kerberos, plaintext"
+        default: "plaintext"
+        required: true
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "authtype"
+      - name: allowoverride
+        title: Allow Override
+        description: "Gives possibility to override hostname, username (and password) in job options"
+        type: Select
+        values: "none, host, user, all"
+        default: "none"
+        required: true
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "allowoverride"
+      - name: shell
+        title: Shell
+        description: "Windows interpreter. Should be same as in Executor"
+        type: Select
+        values: "cmd, powershell, wql"
+        default: 'powershell'
+        required: true
+        scope: Instance
+        renderingOptions:
+          instance-scope-node-attribute: "shell"
