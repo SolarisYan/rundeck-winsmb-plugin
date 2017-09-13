@@ -78,8 +78,17 @@ username = os.getenv('RD_NODE_USERNAME')
 password = os.getenv('RD_CONFIG_PASS')
 command = os.getenv('RD_EXEC_COMMAND')
 
-if '.ps1' in command:
-    command = "powershell {0}".format(command)
+
+# Wrapper for avoid unix style file copying then scripts run
+# - not accept chmod call
+# - replace rm -f into rm -force
+# - auto copying renames file from .sh into .ps1 in tmp directory
+
+if 'chmod +x' in command:
+    exit(0)
+elif '-f' in command:
+    command = command.replace('-f', '-Force')
+command = "powershell {0}".format(command)
 
 with open('/tmp/winsmbexe.log', 'a+') as fp_:
     fp_.write('command:{0}\n'.format(command))

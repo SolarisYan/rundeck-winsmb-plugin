@@ -48,6 +48,7 @@ def mkdirs(path,
 
     comps = path.split('/')
     pos = 1
+    share = 'C$'
     for comp in comps:
         cwd = '/'.join(comps[0:pos])
         with open('/tmp/winsmbcp.log', 'a+') as fp_:
@@ -67,6 +68,7 @@ def put_file(src_file, dest_dir, hostname, username, password):
     dest_dir = dest_dir.replace('\\', '/')
     dest_comps = dest_dir.split('/')
     share = dest_comps[0].replace(':', '$')
+    share = 'C$' if not share else share
     suffix = dest_comps[-1][-3:]
     if dest_comps[-1] != file_name and suffix not in ['ps1', 'bat']:
         dest_comps.append(file_name)
