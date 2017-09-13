@@ -80,14 +80,14 @@ def put_file(src_file, dest_dir, hostname, username, password):
         smb_conn.putFile(share, '{0}'.format(dest_file), inst_fh.read)
 
 
-hostname = os.getenv('RD_NODE_HOSTNAME')
-username = os.getenv('RD_NODE_USERNAME')
-password = os.getenv('RD_CONFIG_PASS')
+rd_hostname = os.getenv('RD_NODE_HOSTNAME')
+rd_username = os.getenv('RD_NODE_USERNAME')
+rd_password = os.getenv('RD_CONFIG_PASS')
 
-src_file = sys.argv[1]
-dest_dir = sys.argv[2]
+rd_src_file = sys.argv[1]
+rd_dest_dir = sys.argv[2]
 
 with open('/tmp/winsmbcp.log', 'a+') as fp_:
-    fp_.write('src_file:{0}\n dest_dir:{1}\n'.format(src_file, dest_dir))
+    fp_.write('src_file:{0}\n dest_dir:{1}\n'.format(rd_src_file, rd_dest_dir))
 
-put_file(src_file, dest_dir, hostname, username, password)
+put_file(rd_src_file, rd_dest_dir, rd_hostname, rd_username, rd_password)
