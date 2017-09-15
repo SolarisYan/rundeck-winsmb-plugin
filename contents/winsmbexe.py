@@ -6,29 +6,28 @@ import subprocess
 
 from nb_popen import NonBlockingPopen
 
-try:
-    import impacket.smbconnection
-    from impacket.smbconnection import SessionError as smbSessionError
-    from impacket.smb3 import SessionError as smb3SessionError
-    HAS_IMPACKET = True
-except ImportError:
-    HAS_IMPACKET = False
+# try:
+#     import impacket.smbconnection
+#     from impacket.smbconnection import SessionError as smbSessionError
+#     from impacket.smb3 import SessionError as smb3SessionError
+#     HAS_IMPACKET = True
+# except ImportError:
+#     HAS_IMPACKET = False
 
 log = logging.getLogger(__name__)
 
+# def get_conn(host=None, username=None, password=None):
+#     '''
+#     Get an SMB connection
+#     '''
+#     if not HAS_IMPACKET:
+#         return False
 
-def get_conn(host=None, username=None, password=None):
-    '''
-    Get an SMB connection
-    '''
-    if not HAS_IMPACKET:
-        return False
-
-    conn = impacket.smbconnection.SMBConnection(
-        remoteName='*SMBSERVER',
-        remoteHost=host, )
-    conn.login(user=username, password=password)
-    return conn
+#     conn = impacket.smbconnection.SMBConnection(
+#         remoteName='*SMBSERVER',
+#         remoteHost=host, )
+#     conn.login(user=username, password=password)
+#     return conn
 
 
 def win_cmd(exe_command, **kwargs):
@@ -54,12 +53,13 @@ def win_cmd(exe_command, **kwargs):
                      logging_command)
 
         proc.poll_and_read_until_finish()
-        proc.communicate()
+        # proc.communicate()
+        proc.communicate(input='\n')
         return proc.returncode
     except Exception as err:
         log.info(
-            'Failed to execute command \'{0}\': {1}\n'.format(logging_command,
-                                                              err),
+            'Failed to execute command \'{0}\': {1}\n'.format(
+                logging_command, err),
             exc_info=True)
     # Signal an error
     return 1
@@ -78,7 +78,6 @@ username = os.getenv('RD_NODE_USERNAME')
 password = os.getenv('RD_CONFIG_PASS')
 command = os.getenv('RD_EXEC_COMMAND')
 
-
 # Wrapper for avoid unix style file copying then scripts run
 # - not accept chmod call
 # - replace rm -f into rm -force
@@ -86,14 +85,19 @@ command = os.getenv('RD_EXEC_COMMAND')
 
 if 'chmod +x' in command:
     exit(0)
-elif '-f' in command:
+if '-f' in command:
     command = command.replace('-f', '-Force')
-command = "powershell {0}".format(command)
+if '.sh' in command:
+    command = command.replace('.sh', '.ps1')
+
+# command = "powershell {0}".format(command)
+command = "powershell -inputformat none -command {0}".format(command)
 
 with open('/tmp/winsmbexe.log', 'a+') as fp_:
     fp_.write('command:{0}\n'.format(command))
 
 ret = execute_cmd(command, hostname, username, password)
+
 with open('/tmp/winsmbexe.log', 'a+') as fp_:
     fp_.write('ret:{0}\n'.format(ret))
 exit(ret)
