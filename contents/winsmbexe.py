@@ -53,8 +53,8 @@ def win_cmd(exe_command, **kwargs):
                      logging_command)
 
         proc.poll_and_read_until_finish()
-        # proc.communicate()
-        proc.communicate(input='\n')
+        proc.communicate()
+        # proc.communicate(input='\n')
         return proc.returncode
     except Exception as err:
         log.info(
