@@ -6,28 +6,7 @@ import subprocess
 
 from nb_popen import NonBlockingPopen
 
-# try:
-#     import impacket.smbconnection
-#     from impacket.smbconnection import SessionError as smbSessionError
-#     from impacket.smb3 import SessionError as smb3SessionError
-#     HAS_IMPACKET = True
-# except ImportError:
-#     HAS_IMPACKET = False
-
 log = logging.getLogger(__name__)
-
-# def get_conn(host=None, username=None, password=None):
-#     '''
-#     Get an SMB connection
-#     '''
-#     if not HAS_IMPACKET:
-#         return False
-
-#     conn = impacket.smbconnection.SMBConnection(
-#         remoteName='*SMBSERVER',
-#         remoteHost=host, )
-#     conn.login(user=username, password=password)
-#     return conn
 
 
 def win_cmd(exe_command, **kwargs):
@@ -55,17 +34,11 @@ def win_cmd(exe_command, **kwargs):
         proc.poll_and_read_until_finish()
         # proc.communicate()
         stdout, stderr = proc.communicate()
-        # proc.communicate(input='\n')
-        # return proc.returncode
         return (stdout, stderr, proc.returncode)
     except Exception as err:
         with open('/tmp/winsmbexe.log', 'a+') as fp_:
             fp_.write('Failed to execute command \'{0}\': {1}\n'.format(
                 logging_command, err))
-        # log.info(
-        #     'Failed to execute command \'{0}\': {1}\n'.format(
-        #         logging_command, err),
-        #     exc_info=True)
         # Signal an error
         return (None, None, 1)
 
@@ -126,13 +99,9 @@ def execute_ps_cmd(command, host, user, passwd):
     if command.startswith('/tmp/'):
         command = 'c:{0}'.format(command)
 
-    # command = "powershell {0}".format(command)
-    # command = "powershell -inputformat none -command {0}".format(command)
-
     with open('/tmp/winsmbexe.log', 'a+') as fp_:
         fp_.write('command:{0}\n'.format(command))
 
-    # ret = execute_cmd(command, hostname, username, password)
     ret_stdout, ret_stderr, ret_code = execute_cmd(command, host, user, passwd)
 
     with open('/tmp/winsmbexe.log', 'a+') as fp_:
