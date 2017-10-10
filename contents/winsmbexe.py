@@ -46,8 +46,7 @@ def win_cmd(exe_command, **kwargs):
 def execute_cmd(exe_cmd, host, user, passwd):
     creds = "-U '{0}%{1}' //{2}".format(user, passwd, host)
     logging_creds = "-U '{0}%XXX-REDACTED-XXX' //{1}".format(user, host)
-    # cmd = 'winexe {0} "{1}"'.format(creds, exe_cmd)
-    # logging_cmd = 'winexe {0} "{1}"'.format(logging_creds, exe_cmd)
+    # This solves the hanging issue via psexec for Win2003 and Win2008
     cmd = 'winexe {0} "powershell -inputformat none -command {1}"'.format(
         creds, exe_cmd)
     logging_cmd = 'winexe {0} "powershell -inputformat none -command {1}"'.format(
