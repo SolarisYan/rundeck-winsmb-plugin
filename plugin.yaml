@@ -9,7 +9,9 @@ providers:
     description: Executing Scripts or commands on remote windows computer
     service: NodeExecutor
     plugin-type: script
-    script-interpreter: python
+    # script-interpreter: python
+    # update at 20180518. we can specify the custom python path for this script
+    script-interpreter: ${globals.python_path}/python
     script-file: winsmbexe.py
     interpreter-args-quoted: true
     config:
@@ -65,7 +67,8 @@ providers:
     title: WinSMB File Copier
     service: FileCopier
     plugin-type: script
-    script-interpreter: python
+    # script-interpreter: python
+    script-interpreter: ${globals.python_path}/python
     script-file: winsmbcp.py
     # script-args: ${node.hostname} ${file-copy.file} ${file-copy.destination}
     script-args: ${file-copy.file} ${file-copy.destination}
